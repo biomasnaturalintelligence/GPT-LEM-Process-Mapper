@@ -698,7 +698,7 @@
 </div>
 
 <!-- ======================================================
-     VIEW: EXPLAINER (iframe wrapper)
+     VIEW: EXPLAINER (fully embedded)
      ====================================================== -->
 <div class="view" id="view-explainer">
   <div class="inner-page">
@@ -706,13 +706,430 @@
       <button class="back-btn" onclick="show('view-hub')">← Back to Hub</button>
       <span class="inner-nav-title">GPT/LEM, Explained — Interactive Guide</span>
     </div>
-    <iframe
-      src="gpt-lem-explainer.html"
-      style="width:100%; height:calc(100vh - 55px); border:none; display:block;"
-      title="GPT/LEM Interactive Guide"
-    ></iframe>
+
+    <div class="explainer-wrap">
+    <div class="exp-container">
+
+      <header class="exp-hero">
+        <h1>GPT/LEM, Explained</h1>
+        <p class="exp-subtitle">An interactive guide to seeing the world as processes — not things</p>
+        <div class="exp-progress-bar"><div class="exp-progress-fill" id="exp-progress"></div></div>
+        <div class="exp-step-counter"><span id="exp-step-num">1</span> of <span id="exp-step-total">8</span></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="exp-step active" data-step="1">
+        <h2><span class="exp-step-tag">Step 1</span>The Big Idea</h2>
+        <p class="exp-lead">Most of us describe the world using <em>nouns</em>: a forest, a village, an economy. GPT/LEM asks you to flip that — and describe the world as <em>processes</em> instead.</p>
+        <p>A "forest" sounds like a stable thing. But really, a forest is a slow, ongoing dance of photosynthesis, decomposition, water cycling, and tree-growth happening all at once. Stop the processes, and the "forest" disappears.</p>
+        <p>This framework gives you two tools:</p>
+        <div class="exp-callout"><strong>GPT — General Process Theory.</strong> A vocabulary for describing <em>what kind of process</em> something is. Five types (T1–T5).</div>
+        <div class="exp-callout"><strong>LEM — Leveled Mereology.</strong> A way to organize processes into <em>nested levels</em> — small processes are parts of bigger processes, and new properties emerge at each level.</div>
+        <p>Together they let you map a complex situation — a territory, an ecosystem, a community — and see <em>what's actually happening</em>, at what scales, and where the leverage points are.</p>
+        <p style="color:var(--muted);font-size:0.88rem;margin-top:24px;">Developed by philosopher Johanna Seibt. Used in ecology, sustainability, organizational design, and territorial planning.</p>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="exp-step" data-step="2">
+        <h2><span class="exp-step-tag">Step 2</span>Why "Processes" Instead of "Things"?</h2>
+        <p class="exp-lead">Try this thought experiment.</p>
+        <div class="exp-case-box">
+          <p><strong>Your body.</strong> Is it a thing? It feels like one. But every cell in your body will be replaced within ~7–10 years. The atoms in your blood today were in your dinner last week. So what <em>is</em> your body, exactly?</p>
+          <p style="margin:0;">It's a <em>pattern of processes</em> — metabolism, repair, breathing, circulation — that hold a recognizable shape over time. Stop the processes for a few minutes, and the "thing" is gone.</p>
+        </div>
+        <p>The same logic applies to anything alive or complex: a coral reef, a city, a marriage, a company, a forest. They <em>look</em> like things. They behave like processes.</p>
+        <h3>Why this matters practically</h3>
+        <p>If you treat a forest as a thing, you might count the trees and call it managed. If you treat it as a set of processes, you ask: <em>Is photosynthesis still happening at scale? Is the seed-dispersal process intact? Is the soil-microbiome process recovering or collapsing?</em></p>
+        <p>The questions you can ask depend on the vocabulary you have. GPT gives you a richer vocabulary.</p>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="exp-step" data-step="3">
+        <h2><span class="exp-step-tag">Step 3</span>The Five Types of Processes</h2>
+        <p class="exp-lead">GPT classifies processes into five types. Click each one to see what it means.</p>
+        <div class="exp-type-grid" id="exp-type-grid">
+          <button class="exp-type-card" data-type="T1"><div class="exp-type-label">T1</div><div class="exp-type-name">Activity</div><p class="exp-type-desc">Ongoing, uniform, no beginning or end</p></button>
+          <button class="exp-type-card" data-type="T2"><div class="exp-type-label">T2</div><div class="exp-type-name">Stuff</div><p class="exp-type-desc">A mass or substance, no fixed location</p></button>
+          <button class="exp-type-card" data-type="T3"><div class="exp-type-label">T3</div><div class="exp-type-name">Amount</div><p class="exp-type-desc">A bounded portion of stuff</p></button>
+          <button class="exp-type-card" data-type="T4"><div class="exp-type-label">T4</div><div class="exp-type-name">Development</div><p class="exp-type-desc">Phased, directional — goes somewhere</p></button>
+          <button class="exp-type-card" data-type="T5"><div class="exp-type-label">T5</div><div class="exp-type-name">Thing</div><p class="exp-type-desc">Persistent, organized, spatially bounded</p></button>
+        </div>
+        <div class="exp-type-detail exp-type-detail-empty" id="exp-type-detail">Click any type above to see how it works ↑</div>
+        <div class="exp-callout" style="margin-top:24px;"><strong>The crucial distinction:</strong> A T1 process (Activity) is "already happening" at any moment you observe it. A T4 process (Development) "goes somewhere" — it has phases and you cannot understand it from a single snapshot. Mixing these up is the most common analytical error.</div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="exp-step" data-step="4">
+        <h2><span class="exp-step-tag">Step 4</span>Practice: Classify These</h2>
+        <p class="exp-lead">Try to identify the type. There's often more than one defensible answer — pick the most dominant.</p>
+
+        <div class="exp-quiz-card" data-correct="T1">
+          <div class="exp-quiz-question">🌬️ <strong>Wind blowing across a field.</strong></div>
+          <div class="exp-quiz-options">
+            <button class="exp-quiz-option" data-answer="T1">T1 Activity</button>
+            <button class="exp-quiz-option" data-answer="T2">T2 Stuff</button>
+            <button class="exp-quiz-option" data-answer="T4">T4 Development</button>
+            <button class="exp-quiz-option" data-answer="T5">T5 Thing</button>
+          </div>
+          <div class="exp-quiz-feedback"></div>
+        </div>
+
+        <div class="exp-quiz-card" data-correct="T4">
+          <div class="exp-quiz-question">🌳 <strong>A forest recovering from a fire over 40 years.</strong></div>
+          <div class="exp-quiz-options">
+            <button class="exp-quiz-option" data-answer="T1">T1 Activity</button>
+            <button class="exp-quiz-option" data-answer="T3">T3 Amount</button>
+            <button class="exp-quiz-option" data-answer="T4">T4 Development</button>
+            <button class="exp-quiz-option" data-answer="T5">T5 Thing</button>
+          </div>
+          <div class="exp-quiz-feedback"></div>
+        </div>
+
+        <div class="exp-quiz-card" data-correct="T2">
+          <div class="exp-quiz-question">💧 <strong>The water in a watershed (considered as substance).</strong></div>
+          <div class="exp-quiz-options">
+            <button class="exp-quiz-option" data-answer="T2">T2 Stuff</button>
+            <button class="exp-quiz-option" data-answer="T3">T3 Amount</button>
+            <button class="exp-quiz-option" data-answer="T4">T4 Development</button>
+            <button class="exp-quiz-option" data-answer="T5">T5 Thing</button>
+          </div>
+          <div class="exp-quiz-feedback"></div>
+        </div>
+
+        <div class="exp-quiz-card" data-correct="T5">
+          <div class="exp-quiz-question">🏘️ <strong>A village that has existed for 200 years.</strong></div>
+          <div class="exp-quiz-options">
+            <button class="exp-quiz-option" data-answer="T1">T1 Activity</button>
+            <button class="exp-quiz-option" data-answer="T2">T2 Stuff</button>
+            <button class="exp-quiz-option" data-answer="T4">T4 Development</button>
+            <button class="exp-quiz-option" data-answer="T5">T5 Thing</button>
+          </div>
+          <div class="exp-quiz-feedback"></div>
+        </div>
+
+        <div class="exp-quiz-card" data-correct="T3">
+          <div class="exp-quiz-question">🪣 <strong>The 50 liters of rainwater collected in a tank yesterday.</strong></div>
+          <div class="exp-quiz-options">
+            <button class="exp-quiz-option" data-answer="T1">T1 Activity</button>
+            <button class="exp-quiz-option" data-answer="T2">T2 Stuff</button>
+            <button class="exp-quiz-option" data-answer="T3">T3 Amount</button>
+            <button class="exp-quiz-option" data-answer="T5">T5 Thing</button>
+          </div>
+          <div class="exp-quiz-feedback"></div>
+        </div>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="exp-step" data-step="5">
+        <h2><span class="exp-step-tag">Step 5</span>The Five Parameters of a Process</h2>
+        <p class="exp-lead">Once you've classified a process, GPT asks you to describe it along five dimensions. Together these give you a "profile" of how the process actually works.</p>
+        <div class="exp-param-grid">
+          <div class="exp-param-card"><div class="exp-param-num">PARAM 1</div><div class="exp-param-name">Automerity</div><p class="exp-param-desc">Is a small slice of the process the same kind of thing as the whole?</p><div class="exp-param-example">A river flowing for 1 second is still "river flowing." But the first 5 minutes of baking bread is not "baking bread" — it's just mixing.</div></div>
+          <div class="exp-param-card"><div class="exp-param-num">PARAM 2</div><div class="exp-param-name">Participants</div><p class="exp-param-desc">Who or what is involved, and in what role? (Agent, patient, instrument, medium, setting.)</p><div class="exp-param-example">In "fishing," participants are: fisher (agent), fish (patient), net (instrument), water (medium), reef (setting).</div></div>
+          <div class="exp-param-card"><div class="exp-param-num">PARAM 3</div><div class="exp-param-name">Composition</div><p class="exp-param-desc">What smaller processes make this process up?</p><div class="exp-param-example">"Photosynthesis" is composed of light absorption + water splitting + carbon fixation + sugar formation.</div></div>
+          <div class="exp-param-card"><div class="exp-param-num">PARAM 4</div><div class="exp-param-name">Shape</div><p class="exp-param-desc">How does it unfold? Cyclic, linear, gradual, sudden, cascading, rhythmic?</p><div class="exp-param-example">A tide is cyclic. A landslide is sudden. A child growing is gradual.</div></div>
+          <div class="exp-param-card"><div class="exp-param-num">PARAM 5</div><div class="exp-param-name">Context</div><p class="exp-param-desc">What larger process surrounds and enables this one?</p><div class="exp-param-example">"Fishing" is embedded in the larger process of "village food economy," which is embedded in "regional ocean ecology."</div></div>
+        </div>
+        <div class="exp-callout"><strong>Why these matter:</strong> If you only know the <em>type</em> of a process, you have a label. If you know all five parameters, you understand how it actually behaves and where to intervene.</div>
+      </section>
+
+      <!-- STEP 6 -->
+      <section class="exp-step" data-step="6">
+        <h2><span class="exp-step-tag">Step 6</span>LEM — Stacking Processes Into Levels</h2>
+        <p class="exp-lead">Processes nest inside other processes. LEM (Leveled Mereology) gives you a clean way to organize this. Click each level to expand.</p>
+        <div class="exp-lem-stack" id="exp-lem-stack">
+          <div class="exp-lem-level" data-level="N1">
+            <div class="exp-lem-level-header"><span class="exp-lem-tag">N1</span><span class="exp-lem-name">Foundational processes</span><span class="exp-lem-toggle">▾</span></div>
+            <div class="exp-lem-detail">The smallest building blocks. Individual metabolisms, biogeochemical cycles, basic transactions.<br><em>Examples in a coastal village:</em> a single fish breathing, a coral polyp feeding, one person buying bread.</div>
+          </div>
+          <div class="exp-lem-level" data-level="N2">
+            <div class="exp-lem-level-header"><span class="exp-lem-tag">N2</span><span class="exp-lem-name">Meso-level integrations</span><span class="exp-lem-toggle">▾</span></div>
+            <div class="exp-lem-detail">Many N1 processes combine into community-scale dynamics.<br><em>Examples:</em> the reef ecosystem function, the village daily market, the school of fish migrating.</div>
+          </div>
+          <div class="exp-lem-level" data-level="N3">
+            <div class="exp-lem-level-header"><span class="exp-lem-tag">N3</span><span class="exp-lem-name">Systemic / territorial level</span><span class="exp-lem-toggle">▾</span></div>
+            <div class="exp-lem-detail">Whole-territory or whole-system patterns. Governance, cultural coherence, landscape integrity.<br><em>Examples:</em> the village's identity over generations, the watershed's ecological regime, regional fishing law.</div>
+          </div>
+          <div class="exp-lem-level" data-level="N4">
+            <div class="exp-lem-level-header"><span class="exp-lem-tag">N4+</span><span class="exp-lem-name">Bioregional / civilizational</span><span class="exp-lem-toggle">▾</span></div>
+            <div class="exp-lem-detail">The largest scales — biome dynamics, civilizational patterns, planetary cycles.<br><em>Examples:</em> Atlantic Forest dynamics, global climate, a civilizational transition.</div>
+          </div>
+        </div>
+        <h3>The key insight: emergence</h3>
+        <p>Within a level, parts add up cleanly: 5 fish breathing = "5 fish breathing." But <strong>across levels, parts do NOT add up.</strong> A reef ecosystem is not just "many corals doing coral things." New properties emerge — like reef resilience, or self-organizing patches — that <em>don't exist</em> at the level below.</p>
+        <div class="exp-callout"><strong>Practical rule:</strong> When zooming out one level produces a property that genuinely wasn't there before, you've crossed a LEM boundary. That's where emergence lives — and where most policy interventions miss the mark.</div>
+      </section>
+
+      <!-- STEP 7 -->
+      <section class="exp-step" data-step="7">
+        <h2><span class="exp-step-tag">Step 7</span>A Worked Example</h2>
+        <p class="exp-lead">Let's apply the whole framework to a real situation.</p>
+        <div class="exp-case-box">
+          <div class="exp-case-input">"We have a coastal fishing village of 300 people. The reef has been declining for 15 years. Young people are leaving. The elders still perform traditional fishing ceremonies."</div>
+          <h3 style="margin-top:0;">Processes identified</h3>
+          <div class="exp-process-row"><span class="exp-process-pill T1">T1</span><div class="exp-process-text"><strong>Daily fishing activity</strong> — uniform, ongoing. Any day's fishing is "fishing."</div></div>
+          <div class="exp-process-row"><span class="exp-process-pill T2">T2</span><div class="exp-process-text"><strong>Fish biomass</strong> — substance distributed across the reef.</div></div>
+          <div class="exp-process-row"><span class="exp-process-pill T4">T4</span><div class="exp-process-text"><strong>Reef degradation over 15 years</strong> — phased, directional. Has a beginning, middle, and a possible "point of no return."</div></div>
+          <div class="exp-process-row"><span class="exp-process-pill T4">T4</span><div class="exp-process-text"><strong>Out-migration of youth</strong> — also phased and directional. Each year erodes the next year's possibility space.</div></div>
+          <div class="exp-process-row"><span class="exp-process-pill T4">T4</span><div class="exp-process-text"><strong>Cultural transmission via ceremony</strong> — fragile, phased: needs participants at each generation.</div></div>
+          <div class="exp-process-row"><span class="exp-process-pill T5">T5</span><div class="exp-process-text"><strong>The village itself</strong> — persistent, organized, spatially bounded. A "thing" composed of all the above.</div></div>
+          <h3>What the framework reveals</h3>
+          <p>Three T4 (Development) processes are running in parallel and <em>coupled</em>: reef decline, youth migration, ceremony fade. None of them is uniform — each is going somewhere. If you mistake them for T1 activities ("we still fish, we still have ceremonies") you miss the trajectory.</p>
+          <p>At the LEM level: the N3 process — <em>the village as a self-maintaining socio-ecological system</em> — is losing the conditions for its own continuation. Its parts (N1 fishing, N2 community life) still function, but the whole is no longer recursively self-maintaining.</p>
+          <div class="exp-callout"><strong>Leverage insight:</strong> Trying to "preserve the ceremony" alone won't work, because the ceremony depends on participants who are leaving because the reef is declining. The intervention has to address the <em>coupling</em> between the T4 processes — not any single one.</div>
+        </div>
+      </section>
+
+      <!-- STEP 8 -->
+      <section class="exp-step" data-step="8">
+        <h2><span class="exp-step-tag">Step 8</span>What You Now Know</h2>
+        <div class="exp-final-card">
+          <h3>You can now:</h3>
+          <p style="text-align:left;margin:0;">
+            ✓ See situations as <strong>processes</strong>, not just things.<br>
+            ✓ Classify processes into <strong>T1–T5</strong>.<br>
+            ✓ Describe a process along <strong>5 parameters</strong>.<br>
+            ✓ Stack processes into <strong>LEM levels (N1–N4+)</strong>.<br>
+            ✓ Spot where <strong>emergence</strong> happens (across levels).<br>
+            ✓ Identify <strong>systemic tensions</strong> — like T4 processes mistaken for T1, or coupled developments threatening a recursively self-maintaining system.
+          </p>
+        </div>
+        <h3>Quick reference glossary</h3>
+        <div class="exp-glossary">
+          <details class="exp-gloss-item"><summary>Automerity</summary><div class="exp-gloss-body">The degree to which a process is "the same as itself" across smaller portions. A river flowing has high temporal automerity (any second of it is also a flowing-river). Baking a cake has low automerity (the first minute is not "baking a cake").</div></details>
+          <details class="exp-gloss-item"><summary>Homomerity</summary><div class="exp-gloss-body">Whether the parts of a process resemble the whole. Related to automerity but emphasizes structural similarity rather than temporal.</div></details>
+          <details class="exp-gloss-item"><summary>T1 — Activity</summary><div class="exp-gloss-body">A process that is uniform and ongoing — any time-slice IS the same process. Examples: breathing, raining, flowing, fishing (as a daily routine).</div></details>
+          <details class="exp-gloss-item"><summary>T2 — Stuff</summary><div class="exp-gloss-body">A mass or substance, distributed in space without fixed individual location. Examples: water, biomass, sand.</div></details>
+          <details class="exp-gloss-item"><summary>T3 — Amount</summary><div class="exp-gloss-body">A bounded, individuated portion of stuff. Examples: this 50 liters of water, that pile of sand, the harvest of one boat.</div></details>
+          <details class="exp-gloss-item"><summary>T4 — Development</summary><div class="exp-gloss-body">A phased, directional process. Has beginning, middle, end. Cannot be understood from a single snapshot. Examples: a forest succession, a marriage, a degradation, a recovery.</div></details>
+          <details class="exp-gloss-item"><summary>T5 — Thing</summary><div class="exp-gloss-body">A persistent, spatially bounded, highly organized process that we ordinarily call an "object." Trees, villages, organisms, institutions.</div></details>
+          <details class="exp-gloss-item"><summary>LEM levels (N1, N2, N3…)</summary><div class="exp-gloss-body">Levels of organization. Within a level, part-whole relations are transitive (parts add up). Across levels, they are NOT — that's where emergence lives.</div></details>
+          <details class="exp-gloss-item"><summary>Recursively self-maintaining</summary><div class="exp-gloss-body">A process that not only maintains itself, but also maintains the very capacity for self-maintenance. Most healthy ecosystems are recursively self-maintaining. When this property breaks, the system can collapse even if its parts still seem to function.</div></details>
+          <details class="exp-gloss-item"><summary>Emergence</summary><div class="exp-gloss-body">When a higher LEM level has properties that genuinely do not exist at the level below, even though the higher level is composed of the lower level's processes.</div></details>
+        </div>
+        <div class="exp-callout" style="margin-top:32px;"><strong>Where to go next:</strong> Try mapping a real situation you care about. Pick a territory, a community, an organization, or a personal system. Identify 5–8 processes. Classify them. Stack them into LEM levels. Look for the coupled T4 developments — that's usually where the insight is.</div>
+      </section>
+
+      <div class="exp-nav">
+        <button id="exp-prev" disabled>← Previous</button>
+        <button id="exp-next" class="exp-primary">Next →</button>
+      </div>
+
+    </div><!-- /exp-container -->
+    </div><!-- /explainer-wrap -->
   </div>
 </div>
+
+<style>
+/* ===== EXPLAINER EMBEDDED STYLES (scoped to .explainer-wrap) ===== */
+.explainer-wrap { background: var(--bg); }
+.exp-container { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
+header.exp-hero { text-align: center; padding: 24px 0 32px; border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+header.exp-hero h1 { font-size: 2.2rem; margin: 0 0 8px; letter-spacing: -0.02em; }
+.exp-subtitle { color: var(--muted); font-size: 1.05rem; margin: 0; }
+.exp-progress-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin: 24px 0 0; }
+.exp-progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; width: 0%; }
+.exp-step-counter { color: var(--muted); font-size: 0.85rem; margin-top: 8px; font-variant-numeric: tabular-nums; }
+.exp-step { display: none; animation: expFadeIn 0.4s ease; }
+.exp-step.active { display: block; }
+@keyframes expFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.explainer-wrap h2 { font-size: 1.6rem; letter-spacing: -0.01em; margin: 0 0 4px; }
+.explainer-wrap h3 { font-size: 1.15rem; margin: 28px 0 8px; color: var(--ink); }
+.explainer-wrap p { color: var(--ink-soft); margin: 0 0 14px; }
+.exp-step-tag { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 3px 10px; border-radius: 999px; vertical-align: middle; margin-right: 10px; }
+.exp-lead { font-size: 1.1rem; color: var(--ink); margin-bottom: 20px; }
+.exp-callout { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 4px; margin: 18px 0; font-size: 0.95rem; color: var(--ink-soft); }
+.exp-callout strong { color: var(--accent); }
+.exp-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
+.explainer-wrap button { font-family: inherit; font-size: 0.95rem; padding: 10px 20px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; transition: all 0.15s ease; }
+.explainer-wrap button:hover:not(:disabled) { border-color: var(--ink); background: #fff; }
+.exp-primary { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+.exp-primary:hover:not(:disabled) { background: #1f4029 !important; }
+.explainer-wrap button:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Type cards */
+.exp-type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+.exp-type-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.18s ease; box-shadow: var(--shadow); text-align: left; }
+.exp-type-card:hover { transform: translateY(-2px); border-color: var(--ink); }
+.exp-type-card.selected { border-width: 2px; padding: 15px; }
+.exp-type-card.selected[data-type="T1"] { border-color: var(--t1); }
+.exp-type-card.selected[data-type="T2"] { border-color: var(--t2); }
+.exp-type-card.selected[data-type="T3"] { border-color: var(--t3); }
+.exp-type-card.selected[data-type="T4"] { border-color: var(--t4); }
+.exp-type-card.selected[data-type="T5"] { border-color: var(--t5); }
+.exp-type-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.exp-type-card[data-type="T1"] .exp-type-label { color: var(--t1); }
+.exp-type-card[data-type="T2"] .exp-type-label { color: var(--t2); }
+.exp-type-card[data-type="T3"] .exp-type-label { color: var(--t3); }
+.exp-type-card[data-type="T4"] .exp-type-label { color: var(--t4); }
+.exp-type-card[data-type="T5"] .exp-type-label { color: var(--t5); }
+.exp-type-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+.exp-type-desc { font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+.exp-type-detail { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-top: 16px; min-height: 140px; }
+.exp-type-detail-empty { text-align: center; color: var(--muted); font-style: italic; padding: 32px 20px; }
+.exp-type-detail h4 { margin: 0 0 8px; font-size: 1.1rem; }
+.exp-type-detail .exp-examples { font-size: 0.9rem; color: var(--ink-soft); margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.exp-type-detail .exp-examples strong { color: var(--ink); }
+/* Quiz */
+.exp-quiz-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin: 16px 0; box-shadow: var(--shadow); }
+.exp-quiz-question { font-size: 1.05rem; font-weight: 500; margin-bottom: 14px; }
+.exp-quiz-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.exp-quiz-option { padding: 8px 14px !important; border: 1px solid var(--line) !important; background: var(--bg) !important; border-radius: 999px !important; cursor: pointer; font-size: 0.9rem !important; transition: all 0.15s ease; color: var(--ink) !important; }
+.exp-quiz-option:hover { border-color: var(--ink) !important; }
+.exp-quiz-option.correct { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+.exp-quiz-option.wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+.exp-quiz-feedback { margin-top: 12px; padding: 12px; border-radius: 6px; font-size: 0.9rem; display: none; }
+.exp-quiz-feedback.show { display: block; }
+.exp-quiz-feedback.correct { background: #d1fae5; color: #065f46; }
+.exp-quiz-feedback.wrong { background: #fef3c7; color: #92400e; }
+/* LEM */
+.exp-lem-stack { margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.exp-lem-level { padding: 14px 18px; border-bottom: 1px solid var(--line); cursor: pointer; transition: background 0.15s; }
+.exp-lem-level:last-child { border-bottom: none; }
+.exp-lem-level:hover { background: var(--accent-soft); }
+.exp-lem-level.expanded { background: var(--accent-soft); }
+.exp-lem-level-header { display: flex; align-items: center; gap: 12px; }
+.exp-lem-tag { font-weight: 700; color: var(--accent); font-size: 0.85rem; min-width: 28px; }
+.exp-lem-name { font-weight: 600; flex: 1; }
+.exp-lem-toggle { color: var(--muted); font-size: 1.2rem; }
+.exp-lem-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 0.9rem; color: var(--ink-soft); }
+.exp-lem-level.expanded .exp-lem-detail { display: block; }
+/* Params */
+.exp-param-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 20px 0; }
+.exp-param-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; box-shadow: var(--shadow); }
+.exp-param-num { font-size: 0.75rem; color: var(--accent); font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
+.exp-param-name { font-weight: 600; margin-bottom: 6px; }
+.exp-param-desc { font-size: 0.88rem; color: var(--ink-soft); margin: 0 0 8px; }
+.exp-param-example { font-size: 0.82rem; color: var(--muted); font-style: italic; border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 4px; }
+/* Case study */
+.exp-case-box { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin: 16px 0; box-shadow: var(--shadow); }
+.exp-case-input { background: var(--bg); padding: 14px; border-radius: 6px; font-style: italic; color: var(--ink-soft); margin-bottom: 16px; border-left: 3px solid var(--muted); }
+.exp-process-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.exp-process-row:last-of-type { border-bottom: none; }
+.exp-process-pill { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; color: #fff; flex-shrink: 0; margin-top: 2px; }
+.exp-process-pill.T1 { background: var(--t1); }
+.exp-process-pill.T2 { background: var(--t2); }
+.exp-process-pill.T4 { background: var(--t4); }
+.exp-process-pill.T5 { background: var(--t5); }
+.exp-process-text { font-size: 0.92rem; }
+.exp-process-text strong { color: var(--ink); }
+/* Final card */
+.exp-final-card { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 8px; padding: 24px; margin: 20px 0; text-align: center; }
+.exp-final-card h3 { color: var(--accent); margin-top: 0; }
+/* Glossary */
+.exp-glossary { margin: 20px 0; }
+details.exp-gloss-item { border: 1px solid var(--line); border-radius: 6px; margin-bottom: 8px; background: var(--card); overflow: hidden; }
+details.exp-gloss-item summary { padding: 12px 16px; cursor: pointer; font-weight: 500; list-style: none; }
+details.exp-gloss-item summary::-webkit-details-marker { display: none; }
+details.exp-gloss-item summary::before { content: "+ "; color: var(--accent); font-weight: 700; }
+details.exp-gloss-item[open] summary::before { content: "− "; }
+.exp-gloss-body { padding: 0 16px 14px; font-size: 0.92rem; color: var(--ink-soft); }
+@media (max-width: 600px) {
+  .exp-container { padding: 24px 16px 60px; }
+  header.exp-hero h1 { font-size: 1.6rem; }
+  .explainer-wrap h2 { font-size: 1.3rem; }
+  .exp-type-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+
+<script>
+(function() {
+  var expSteps, expTotal, expCurrent, expPrevBtn, expNextBtn, expStepNum, expStepTotal, expProgress;
+
+  function expInit() {
+    expSteps   = document.querySelectorAll('.exp-step');
+    expTotal   = expSteps.length;
+    expCurrent = 1;
+    expPrevBtn  = document.getElementById('exp-prev');
+    expNextBtn  = document.getElementById('exp-next');
+    expStepNum  = document.getElementById('exp-step-num');
+    expStepTotal= document.getElementById('exp-step-total');
+    expProgress = document.getElementById('exp-progress');
+    expStepTotal.textContent = expTotal;
+
+    expPrevBtn.onclick = function() { if (expCurrent > 1) { expCurrent--; expShowStep(expCurrent); } };
+    expNextBtn.onclick = function() { if (expCurrent < expTotal) { expCurrent++; expShowStep(expCurrent); } };
+
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('view-explainer').classList.contains('active')) {
+        if (e.key === 'ArrowRight' && !expNextBtn.disabled) { expCurrent++; expShowStep(expCurrent); }
+        if (e.key === 'ArrowLeft'  && !expPrevBtn.disabled) { expCurrent--; expShowStep(expCurrent); }
+      }
+    });
+
+    // Type cards
+    var typeData = {
+      T1: { name:'T1 — Activity',    key:'Uniform, ongoing — any slice IS the same process.', detail:"A T1 process has no built-in beginning or end. If you observe it for one second or one hour, you are seeing the same kind of process happening.", examples:'rain falling • a river flowing • someone walking • photosynthesis • daily fishing' },
+      T2: { name:'T2 — Stuff',       key:'Mass or substance, distributed without fixed location.', detail:"T2 is 'stuff-like' — it exists as a substance rather than as a countable individual. You don't say 'three waters'; you say 'some water.'", examples:'water • biomass • sand • soil • air • milk' },
+      T3: { name:'T3 — Amount',      key:'A bounded, individuated portion of stuff.', detail:"T3 is what happens when you cut out a specific quantity of T2. Now it has edges, a location, a number. 'The water' becomes 'the 50 liters in this tank.'", examples:'50 liters of rainwater • this pile of sand • the harvest of one fishing boat' },
+      T4: { name:'T4 — Development', key:'Phased, directional — goes somewhere.', detail:"A T4 process has internal structure: beginning, middle, end. Different phases are qualitatively different. You CANNOT understand it from a single snapshot.", examples:'a forest growing back • a marriage • reef degradation • cultural transmission across generations' },
+      T5: { name:'T5 — Thing',       key:'Persistent, spatially bounded, highly organized.', detail:"T5 is what we ordinarily call 'objects' — but in process language, they are highly structured, self-stabilizing process bundles.", examples:'a tree • a person • a village • an organization • a country' }
+    };
+    var expTypeDetail = document.getElementById('exp-type-detail');
+    document.querySelectorAll('.exp-type-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.exp-type-card').forEach(function(c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+        var t = card.dataset.type, d = typeData[t];
+        expTypeDetail.classList.remove('exp-type-detail-empty');
+        expTypeDetail.innerHTML = '<h4>'+d.name+'</h4><p style="font-weight:500;color:var(--ink);">'+d.key+'</p><p>'+d.detail+'</p><div class="exp-examples"><strong>Examples:</strong> '+d.examples+'</div>';
+      });
+    });
+
+    // Quiz
+    var explanations = [
+      'Wind blowing is uniform and ongoing — any slice of it is still "wind blowing." Classic T1 Activity.',
+      "Recovery over 40 years has clear phases (pioneer species → mid-succession → mature). It 'goes somewhere.' That's T4 Development.",
+      "As substance, water is T2 Stuff — distributed mass without fixed individual location. (If you said 'the 1000 cubic meters in this dam,' that would be T3.)",
+      "A village is persistent, spatially bounded, and highly organized — T5 Thing. (Internally it contains many T1, T2, T3, T4 processes.)",
+      "Bounded amount of stuff = T3 Amount. The water itself is T2; the specific 50 liters is T3."
+    ];
+    document.querySelectorAll('.exp-quiz-card').forEach(function(card, idx) {
+      var correct = card.dataset.correct;
+      var feedback = card.querySelector('.exp-quiz-feedback');
+      card.querySelectorAll('.exp-quiz-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          if (card.dataset.answered) return;
+          card.dataset.answered = 'true';
+          var chosen = opt.dataset.answer;
+          if (chosen === correct) {
+            opt.classList.add('correct');
+            feedback.classList.add('show','correct');
+            feedback.innerHTML = '✓ Correct. ' + explanations[idx];
+          } else {
+            opt.classList.add('wrong');
+            feedback.classList.add('show','wrong');
+            card.querySelectorAll('.exp-quiz-option').forEach(function(o) { if (o.dataset.answer === correct) o.classList.add('correct'); });
+            feedback.innerHTML = 'Not quite — the answer is <strong>'+correct+'</strong>. ' + explanations[idx];
+          }
+        });
+      });
+    });
+
+    // LEM accordion
+    document.querySelectorAll('.exp-lem-level').forEach(function(lvl) {
+      lvl.addEventListener('click', function() { lvl.classList.toggle('expanded'); });
+    });
+  }
+
+  function expShowStep(n) {
+    expSteps.forEach(function(s) { s.classList.remove('active'); });
+    document.querySelector('.exp-step[data-step="'+n+'"]').classList.add('active');
+    expStepNum.textContent = n;
+    expProgress.style.width = (n / expTotal * 100) + '%';
+    expPrevBtn.disabled = (n === 1);
+    expNextBtn.disabled = (n === expTotal);
+    expNextBtn.textContent = (n === expTotal) ? 'Done ✓' : 'Next →';
+    document.querySelector('.explainer-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Initialize after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', expInit);
+  } else {
+    expInit();
+  }
+})();
+</script>
 
 <!-- ======================================================
      VIEW: SKILL
