@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT/LEM — Process Ontology Hub</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --muted: #8a8a82;
+    --line: #d8d6cf;
+    --accent: #2d5a3d;
+    --accent-soft: #e8efe9;
+    --t1: #d97706;
+    --t2: #0891b2;
+    --t3: #7c3aed;
+    --t4: #dc2626;
+    --t5: #16a34a;
+    --card: #ffffff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ===== HUB ===== */
+  .hub {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 80px;
+  }
+  .hub-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .hub h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-align: center;
+    margin-bottom: 14px;
+    max-width: 680px;
+  }
+  .hub-sub {
+    font-size: 1.1rem;
+    color: var(--ink-soft);
+    text-align: center;
+    max-width: 520px;
+    margin-bottom: 56px;
+    line-height: 1.7;
+  }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    width: 100%;
+  }
+  .hub-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 24px 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hub-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .hub-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+  }
+  .hub-card:hover::before { opacity: 1; }
+  .hub-card-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .hub-card-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hub-card h2 {
+    font-size: 1.15rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .hub-card p {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .hub-card-arrow {
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .hub-footer {
+    margin-top: 48px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .hub-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .hub-footer a:hover { text-decoration: underline; }
+
+  /* ===== INNER PAGES ===== */
+  .inner-page {
+    min-height: 100vh;
+  }
+  .inner-nav {
+    position: sticky;
+    top: 0;
+    background: rgba(250,250,247,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+  }
+  .back-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--card);
+  }
+  .inner-nav-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .page-content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ===== SECTION: SKILL ===== */
+  .skill-hero {
+    margin-bottom: 40px;
+  }
+  .skill-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .skill-hero h1 {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .skill-hero p {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    max-width: 580px;
+    line-height: 1.65;
+  }
+  .callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 4px;
+    margin: 24px 0;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .callout strong { color: var(--accent); }
+  h3 { font-size: 1.1rem; margin: 32px 0 10px; color: var(--ink); }
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .step-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .step-num {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-text { font-size: 0.93rem; color: var(--ink-soft); line-height: 1.55; }
+  .step-text strong { color: var(--ink); }
+  .code-block {
+    background: #1a1a1a;
+    color: #a8e6b8;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 0.88rem;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 10px 0 18px;
+    overflow-x: auto;
+    letter-spacing: 0.01em;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+  .feature-card .fc-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .feature-card p {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .download-box {
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    margin: 32px 0;
+    box-shadow: var(--shadow-lg);
+  }
+  .download-box h3 { margin-top: 0; font-size: 1.2rem; }
+  .download-box p { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 18px; }
+  .dl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .dl-btn:hover { background: #1f4029; }
+
+  /* ===== SECTION: MAPPER ===== */
+  .mapper-intro {
+    margin-bottom: 32px;
+  }
+  .mapper-intro h1 {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .mapper-intro p {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 580px;
+    line-height: 1.65;
+  }
+  /* Mapper form */
+  .mapper-section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .mapper-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .mapper-section h3 { margin-top: 0; font-size: 1rem; margin-bottom: 10px; }
+  label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  textarea, input[type="text"] {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.92rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--ink);
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .process-entry {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .process-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .process-entry-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .remove-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .remove-btn:hover { border-color: #dc2626; color: #dc2626; background: #fff; }
+  .entry-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .entry-row-full { margin-bottom: 10px; }
+  select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.92rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--ink);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8a82' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    transition: border-color 0.15s;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+  .add-process-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-family: inherit;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    transition: all 0.15s;
+    margin-top: 4px;
+  }
+  .add-process-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .generate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+    transition: background 0.15s;
+  }
+  .generate-btn:hover { background: #1f4029; }
+  /* Result map */
+  #map-output { display: none; }
+  .map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .map-header h2 { font-size: 1.5rem; letter-spacing: -0.01em; }
+  .map-header p { font-size: 0.9rem; color: var(--muted); margin-top: 4px; }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .reset-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--card); }
+  /* LEM level blocks */
+  .lem-section { margin-bottom: 16px; }
+  .lem-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--accent-soft);
+    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--line);
+    border-bottom: none;
+  }
+  .lem-tag-big {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    background: #fff;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+  .lem-section-name { font-weight: 600; font-size: 0.95rem; }
+  .lem-section-desc { font-size: 0.82rem; color: var(--muted); margin-left: auto; }
+  .lem-process-list {
+    border: 1px solid var(--line);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+  .lem-process-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  .lem-process-row:last-child { border-bottom: none; }
+  .type-pill {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .type-pill.T1 { background: var(--t1); }
+  .type-pill.T2 { background: var(--t2); }
+  .type-pill.T3 { background: var(--t3); }
+  .type-pill.T4 { background: var(--t4); }
+  .type-pill.T5 { background: var(--t5); }
+  .process-info { flex: 1; }
+  .process-info strong { font-size: 0.95rem; display: block; margin-bottom: 3px; }
+  .process-info .process-meta {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .map-summary {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 24px;
+  }
+  .map-summary h4 { color: var(--accent); margin-bottom: 10px; font-size: 1rem; }
+  .map-summary p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .map-type-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .map-count-chip {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .map-count-chip.T1 { background: var(--t1); }
+  .map-count-chip.T2 { background: var(--t2); }
+  .map-count-chip.T3 { background: var(--t3); }
+  .map-count-chip.T4 { background: var(--t4); }
+  .map-count-chip.T5 { background: var(--t5); }
+  .map-count-chip.none { background: var(--muted); }
+  .alert {
+    background: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: #92400e;
+    margin-bottom: 16px;
+  }
+  /* Print button */
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+  .print-btn:hover { border-color: var(--ink); color: var(--ink); background: var(--card); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 750px) {
+    .hub-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .hub h1 { font-size: 2rem; }
+    .entry-row { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .inner-nav { padding: 12px 16px; }
+    .page-content { padding: 28px 16px 64px; }
+  }
+  @media print {
+    .inner-nav, .generate-btn, .add-process-btn, .remove-btn,
+    .reset-btn, .print-btn, #map-form { display: none !important; }
+    #map-output { display: block !important; }
+    .view { display: block !important; }
+    #view-hub, #view-skill { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================================================
+     VIEW: HUB
+     ====================================================== -->
+<div class="view active" id="view-hub">
+  <div class="hub">
+    <div class="hub-badge">Biomas Foundation's</div>
+    <h1>GPT/LEM<br>Knowledge Hub</h1>
+    <p class="hub-sub">
+      Johanna Seibt's General Process Theory and Leveled Mereology —
+      a rigorous framework for seeing the world as processes, not things.
+      Choose where to start.
+    </p>
+
+    <div class="hub-grid">
+
+      <div class="hub-card" onclick="show('view-explainer')">
+        <div class="hub-card-icon">📖</div>
+        <div class="hub-card-num">Path 1</div>
+        <h2>Learn GPT/LEM</h2>
+        <p>An interactive 8-step guide. Go from zero to mapping real situations — with quizzes, examples, and a full glossary.</p>
+        <div class="hub-card-arrow">Start learning →</div>
+      </div>
+
+      <div class="hub-card" onclick="show('view-skill')">
+        <div class="hub-card-icon">🤖</div>
+        <div class="hub-card-num">Path 2</div>
+        <h2>Use the Claude Skill</h2>
+        <p>The <code style="font-size:0.85em; background:var(--bg); padding:1px 5px; border-radius:3px;">/gpt-lem-process-mapper</code> skill lets Claude map any territory or situation using GPT/LEM on your behalf.</p>
+        <div class="hub-card-arrow">Install the skill →</div>
+      </div>
+
+      <div class="hub-card" onclick="show('view-example')">
+        <div class="hub-card-icon">🌿</div>
+        <div class="hub-card-num">Path 3</div>
+        <h2>Real Example</h2>
+        <p>See the skill in action on a real case: Piracanga ecovillage, Bahia — 7 years of groundwater stewardship mapped through GPT/LEM.</p>
+        <div class="hub-card-arrow">See the output →</div>
+      </div>
+
+    </div>
+
+    <div class="hub-footer">
+      Framework by <a href="https://cc.au.dk/en/research/research-areas/language-cognition-and-communication/johanna-seibt" target="_blank">Johanna Seibt</a> ·
+      Applied to territorial and ecological analysis
+      <br style="margin-bottom:8px;">
+      <span style="margin-top:10px; display:inline-block; color:var(--muted);">All rights reserved to Biomas Foundation</span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW: EXPLAINER (iframe wrapper)
+     ====================================================== -->
+<div class="view" id="view-explainer">
+  <div class="inner-page">
+    <div class="inner-nav">
+      <button class="back-btn" onclick="show('view-hub')">← Back to Hub</button>
+      <span class="inner-nav-title">GPT/LEM, Explained — Interactive Guide</span>
+    </div>
+    <iframe
+      src="gpt-lem-explainer.html"
+      style="width:100%; height:calc(100vh - 55px); border:none; display:block;"
+      title="GPT/LEM Interactive Guide"
+    ></iframe>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW: SKILL
+     ====================================================== -->
+<div class="view" id="view-skill">
+  <div class="inner-page">
+    <div class="inner-nav">
+      <button class="back-btn" onclick="show('view-hub')">← Back to Hub</button>
+      <span class="inner-nav-title">Claude Skill — GPT/LEM Process Mapper</span>
+    </div>
+    <div class="page-content">
+
+      <div class="skill-hero">
+        <span class="skill-tag">Claude Skill</span>
+        <h1>/gpt-lem-process-mapper</h1>
+        <p>A skill for Claude Cowork mode that maps any territory, ecosystem, or complex situation through the lens of Johanna Seibt's General Process Theory and Leveled Mereology — automatically and rigorously.</p>
+      </div>
+
+      <div class="callout">
+        <strong>What it does:</strong> You describe a place, a community, an ecosystem, or any situation you want to understand. The skill identifies the underlying processes, classifies them as T1–T5, maps them into LEM levels, and surfaces systemic tensions — without you needing to know the framework first.
+      </div>
+
+      <h3>What the skill produces</h3>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-label">Process Inventory</div>
+          <p>A structured list of all processes identified in your input, each classified by type (T1–T5) and described along GPT's five parameters.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">LEM Map</div>
+          <p>Processes organized into nested levels (N1 foundational → N4+ bioregional), showing how small processes compose into larger systemic dynamics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">Systemic Tensions</div>
+          <p>Identification of coupled T4 developments, self-maintenance failures, and cross-scale mismatches — where leverage points usually hide.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-label">Analytical Caveats</div>
+          <p>Honest flags for classification ambiguity, data gaps, and alternative interpretations — so the output can be trusted.</p>
+        </div>
+      </div>
+
+      <h3>When to use it</h3>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">→</div>
+          <div class="step-text">You have field notes, ecological indicators, interview summaries, or sensor data and want to understand <strong>what is actually happening</strong> in a territory.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">→</div>
+          <div class="step-text">You're planning an intervention and need to know <strong>which processes are coupled</strong> — so you don't fix one T4 while ignoring the others it depends on.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">→</div>
+          <div class="step-text">You want to write a <strong>formal process description</strong> using GPT/LEM vocabulary for a research paper, report, or planning document.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">→</div>
+          <div class="step-text">You're learning the framework and want Claude to <strong>model correct usage</strong> on a real example before you practice yourself.</div>
+        </div>
+      </div>
+
+      <div class="download-box">
+        <h3>Download the skill file</h3>
+        <p>The skill is a single file (<code style="font-size:0.85em; background:var(--bg); padding:1px 6px; border-radius:3px;">SKILL.md</code>) that you install manually into Claude's skills directory on your computer.</p>
+        <a class="dl-btn" href="gpt-lem-process-mapper/SKILL.md" download="SKILL.md">
+          ↓ Download SKILL.md
+        </a>
+      </div>
+
+      <h3>How to install</h3>
+      <div class="callout" style="margin-top:0;">
+        <strong>Requirements:</strong> Claude desktop app with Cowork mode enabled. Works on macOS and Windows.
+      </div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-text">Download the <strong>SKILL.md</strong> file using the button above.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            On your computer, navigate to Claude's skills folder. Create the folder <strong>gpt-lem-process-mapper</strong> inside it, and place the downloaded <strong>SKILL.md</strong> file inside that folder.<br><br>
+            <strong style="color:var(--ink);">macOS path:</strong>
+          </div>
+        </div>
+      </div>
+      <div class="code-block">~/Library/Application Support/Claude/plugins/skills/gpt-lem-process-mapper/SKILL.md</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Restart Claude</strong> (quit and reopen the app) so it picks up the new skill file.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-text">Open <strong>Cowork mode</strong>. The skill is now active. Describe any territory or paste observational data — Claude will automatically apply the GPT/LEM framework. You can also invoke it explicitly:</div>
+        </div>
+      </div>
+      <div class="code-block">Map the processes in this territory using GPT/LEM: [paste your observations here]</div>
+      <div class="callout">
+        <strong>Tip:</strong> If the skill doesn't activate after restarting, check that the folder name is exactly <code style="font-size:0.88em;">gpt-lem-process-mapper</code> (no spaces) and that the file is named exactly <code style="font-size:0.88em;">SKILL.md</code> (all caps).
+      </div>
+
+      <h3>Example input → output</h3>
+      <div class="callout" style="border-left-color: var(--muted); background: var(--bg);">
+        <strong style="color:var(--ink);">Input:</strong> <span style="color:var(--ink-soft); font-style:italic;">"Coastal village, 300 people. The reef has been declining for 15 years. Young people are leaving. Elders still perform traditional fishing ceremonies. Fish catch has dropped 40% in a decade."</span>
+      </div>
+      <div class="callout">
+        <strong>Output includes:</strong> Daily fishing activity (T1, N2) · Fish biomass (T2, N1) · Reef degradation over 15 years (T4, N2→N3) · Youth out-migration (T4, N3) · Ceremony transmission (T4, N3) · Village as socio-ecological system (T5, N3) — <em>with coupling analysis showing all three T4 developments are interdependent, and that the N3 self-maintaining system is losing recursive capacity.</em>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     VIEW: REAL EXAMPLE
+     ====================================================== -->
+<div class="view" id="view-example">
+  <div class="inner-page">
+    <div class="inner-nav">
+      <button class="back-btn" onclick="show('view-hub')">← Back to Hub</button>
+      <span class="inner-nav-title">Real Example — Piracanga Ecovillage, Bahia</span>
+      <button class="print-btn" style="margin-left:auto;" onclick="window.print()">🖨 Print / Save PDF</button>
+    </div>
+    <div class="page-content">
+
+      <div class="skill-hero">
+        <span class="skill-tag">Practical Example</span>
+        <h1>Piracanga Ecovillage, Southern Bahia</h1>
+        <p>Groundwater stewardship system · 150 residents · 7-year intentional transformation</p>
+      </div>
+
+      <!-- INPUT PROMPT -->
+      <h3 style="margin-top:0;">Input given to the skill</h3>
+      <div style="background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--muted); border-radius:4px; padding:16px 20px; margin-bottom:32px; font-size:0.93rem; color:var(--ink-soft); line-height:1.7; font-style:italic;">
+        "An ecovillage in southern Bahia, Brazil — Piracanga — with 150 residents, which has been implementing various processes over the past 7 years with the goal of caring for Water, especially groundwater, which serves as the drinking water supply for all homes. Actions taken include: replacement of sanitation systems (old septic tanks → modern biodigestors), annual water quality analyses, substitution of chemical hygiene and cleaning products with biodegradable alternatives, and active environmental education."
+      </div>
+
+      <!-- PROCESS CARDS -->
+      <h3>Processes identified &amp; classified</h3>
+
+      <!-- P1 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T1">T1 — Activity</span>
+          <span class="plem-badge">N1</span>
+          <span class="process-card-name">Groundwater Flow</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Temporally maximal — any slice IS the same process; spatially maximal</span></div>
+          <div class="param-row"><span class="param-label">Participants</span><span class="param-val">Groundwater (patient/medium); geological substrate (setting); precipitation (agent); recharge zones (instrument)</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Continuous, sub-cyclic — modulated by rainy/dry seasons, never stopping</span></div>
+          <div class="param-row"><span class="param-label">Context</span><span class="param-val">Embedded in regional Atlantic Forest hydrology; sustains the N2 aquifer system</span></div>
+          <div class="process-note">The foundational process the entire intervention is designed to protect. Its health depends on the participant structure remaining uncontaminated.</div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T2">T2/T3 — Stuff/Amount</span>
+          <span class="plem-badge">N1–N2</span>
+          <span class="process-card-name">Groundwater Reserve</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Spatially maximal as T2 (distributed substance); bounded as T3 when individuated as "the aquifer volume available to the community"</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Stock-and-flow: replenished by recharge (T1), drawn down by extraction (T1), quality modulated by contamination and filtration</span></div>
+          <div class="param-row"><span class="param-label">Context</span><span class="param-val">Embedded in the aquifer ecosystem; directly coupled to all contamination-reduction T4 processes</span></div>
+          <div class="process-note">Piracanga's interventions address T2 <em>quality</em>, not T3 <em>quantity</em> — which is the right priority given the described threats.</div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T4">T4 — Development</span>
+          <span class="plem-badge">N2</span>
+          <span class="process-card-name">Sanitation System Transition (fossas → biodigestors)</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Temporally minimal — diagnosis phase ≠ installation ≠ post-installation monitoring. No slice IS the whole process.</span></div>
+          <div class="param-row"><span class="param-label">Participants</span><span class="param-val">Community leadership (agent); old septic systems (patient); biodigestors (new infrastructure); groundwater and soil (beneficiary); technical expertise (instrument)</span></div>
+          <div class="param-row"><span class="param-label">Composition</span><span class="param-val">Contamination diagnosis → technology selection → phased installation → decommissioning of old systems → quality monitoring</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Sequential with irreversible milestones; directional and non-reversible once completed</span></div>
+          <div class="process-note">The structurally most impactful intervention. Old septic tanks were point-source contamination inputs directly into the soil above the aquifer. Biodigestors close that pathway.</div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T4">T4 — Development</span>
+          <span class="plem-badge">N2</span>
+          <span class="process-card-name">Groundwater Quality Recovery</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Temporally minimal — early recovery ≠ baseline stabilization ≠ restored microbial balance. Cannot be read from a single snapshot.</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Non-linear, likely asymptotic — rapid early improvement as contamination inputs cease, slower approach to full restoration; threshold effects possible</span></div>
+          <div class="param-row"><span class="param-label">Context</span><span class="param-val">Enabled by sanitation transition and product substitution (N2); embedded in Atlantic Forest watershed dynamics (N3)</span></div>
+          <div class="process-note"><strong>This process is not yet complete.</strong> 7 years of monitoring shows trajectory — not arrival. The endpoint (stable safe water sustained without active intervention) has not been confirmed.</div>
+        </div>
+      </div>
+
+      <!-- P5 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T1">T1 + T4</span>
+          <span class="plem-badge">N2</span>
+          <span class="process-card-name">Annual Water Quality Monitoring Program</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Each annual event is T1 (cyclic snapshot); the 7-year series as a whole is T4 — a developing longitudinal knowledge record</span></div>
+          <div class="param-row"><span class="param-label">Participants</span><span class="param-val">Community governance (commissioner); laboratory technicians (executor); water sample as T3 (object); historical baseline (instrument of interpretation)</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Cyclic at event level; linear-accumulative at series level — building a longitudinal dataset that enables trend detection</span></div>
+          <div class="process-note">Does double work: ongoing practice (T1) and the instrument that makes quality recovery (T4) legible. Risk: if results are read as pass/fail instead of as trajectory data, the monitoring underperforms its analytical potential.</div>
+        </div>
+      </div>
+
+      <!-- P6 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T4">T4 — Development</span>
+          <span class="plem-badge">N2</span>
+          <span class="process-card-name">Chemical Product Substitution</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Temporally minimal — awareness ≠ decision ≠ substitution ≠ full adoption and normalization</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">S-curve adoption — rapid among highly motivated residents, slower long tail (visitors, maintenance chemicals, shared facilities)</span></div>
+          <div class="param-row"><span class="param-label">Context</span><span class="param-val">Enabled by environmental education (N2); embedded in intentional community culture (N3)</span></div>
+          <div class="process-note">Unlike the sanitation transition (clear completion milestones), this T4 has a <strong>porous endpoint</strong>. Risks stalling at 80–90% substitution — with the remaining chemical load still detectable in sensitive groundwater monitoring.</div>
+        </div>
+      </div>
+
+      <!-- P7 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T4">T4 — Development</span>
+          <span class="plem-badge">N2–N3</span>
+          <span class="process-card-name">Environmental Education</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Temporally minimal — awareness building ≠ knowledge consolidation ≠ behavioral integration ≠ cultural transmission to new members</span></div>
+          <div class="param-row"><span class="param-label">Participants</span><span class="param-val">Knowledgeable residents/educators (agent); all residents, especially newcomers and children (learner); local ecosystem (setting and content)</span></div>
+          <div class="param-row"><span class="param-label">Dynamic shape</span><span class="param-val">Continuous but uneven — intensive during onboarding and monitoring communications; at risk of dilution with community turnover</span></div>
+          <div class="process-note">The only process that could convert water stewardship from a fragile T4 (developing) into a stable embedded culture (T5). Also the most vulnerable to community membership turnover.</div>
+        </div>
+      </div>
+
+      <!-- P8 -->
+      <div class="process-card">
+        <div class="process-card-header">
+          <span class="ptype-badge T5">T5 — Thing</span>
+          <span class="plem-badge">N3</span>
+          <span class="process-card-name">Piracanga as Socio-Ecological System</span>
+        </div>
+        <div class="process-card-body">
+          <div class="param-row"><span class="param-label">Automerity</span><span class="param-val">Spatially bounded (ecovillage territory); temporally persistent but not maximally automerous — the community has changed over 7 years</span></div>
+          <div class="param-row"><span class="param-label">Participants</span><span class="param-val">150 residents (constitutive agents); shared governance (instrument); land and water (setting); shared intention (cohesive force)</span></div>
+          <div class="param-row"><span class="param-label">Context</span><span class="param-val">Embedded in regional Atlantic Forest biome (N4); within Brazilian socio-ecological context; within global ecovillage network</span></div>
+          <div class="process-note">Piracanga is <strong>functionally self-maintaining</strong> in its water stewardship. Whether it has reached <strong>recursively self-maintaining</strong> status — where the <em>capacity</em> for stewardship is itself transmitted — is the key open question.</div>
+        </div>
+      </div>
+
+      <!-- LEM DIAGRAM -->
+      <h3 style="margin-top:40px;">LEM Level Structure</h3>
+      <div class="lem-diagram">
+        <div class="lem-block lem-n3">
+          <div class="lem-block-header">
+            <span class="lem-block-tag">N3 — Systemic / Territorial</span>
+          </div>
+          <div class="lem-block-item t5">
+            <span class="ptype-badge T5" style="font-size:0.65rem; padding:2px 7px;">T5</span>
+            Piracanga as Water-Stewarding Socio-Ecological System
+          </div>
+          <div class="lem-block-item t4 lem-indent">
+            <span class="ptype-badge T4" style="font-size:0.65rem; padding:2px 7px;">T4</span>
+            Community Water Governance Culture <span class="still-building">still developing</span>
+          </div>
+        </div>
+
+        <div class="lem-arrow">↓ contains</div>
+
+        <div class="lem-block lem-n2">
+          <div class="lem-block-header">
+            <span class="lem-block-tag">N2 — Meso-Level Integrations</span>
+          </div>
+          <div class="lem-block-item t4">
+            <span class="ptype-badge T4" style="font-size:0.65rem; padding:2px 7px;">T4</span>
+            Groundwater Quality Recovery
+            <span class="coupled-badge">← outcome</span>
+          </div>
+          <div class="lem-block-item t4">
+            <span class="ptype-badge T4" style="font-size:0.65rem; padding:2px 7px;">T4</span>
+            Sanitation Transition: fossas → biodigestors
+            <span class="coupled-badge">coupled</span>
+          </div>
+          <div class="lem-block-item t4">
+            <span class="ptype-badge T4" style="font-size:0.65rem; padding:2px 7px;">T4</span>
+            Chemical Product Substitution
+            <span class="coupled-badge">coupled</span>
+          </div>
+          <div class="lem-block-item t4">
+            <span class="ptype-badge T4" style="font-size:0.65rem; padding:2px 7px;">T4</span>
+            Environmental Education
+            <span class="coupled-badge">coupled</span>
+          </div>
+          <div class="lem-block-item" style="border-left-color:#0891b2;">
+            <span class="ptype-badge" style="background:#0891b2; font-size:0.65rem; padding:2px 7px; color:#fff;">T1+T4</span>
+            Annual Water Quality Monitoring
+            <span class="coupled-badge" style="background:#e0f2fe; color:#0369a1;">feedback loop</span>
+          </div>
+        </div>
+
+        <div class="lem-arrow">↓ contains</div>
+
+        <div class="lem-block lem-n1">
+          <div class="lem-block-header">
+            <span class="lem-block-tag">N1 — Foundational Processes</span>
+          </div>
+          <div class="lem-block-item t1">
+            <span class="ptype-badge T1" style="font-size:0.65rem; padding:2px 7px;">T1</span>
+            Groundwater Flow
+          </div>
+          <div class="lem-block-item" style="border-left-color:#7c3aed;">
+            <span class="ptype-badge T3" style="font-size:0.65rem; padding:2px 7px;">T2/T3</span>
+            Groundwater Reserve (substance + bounded volume)
+          </div>
+          <div class="lem-block-item t1">
+            <span class="ptype-badge T1" style="font-size:0.65rem; padding:2px 7px;">T1</span>
+            Biodigestion Activity (microbial processing in each unit)
+          </div>
+          <div class="lem-block-item t1">
+            <span class="ptype-badge T1" style="font-size:0.65rem; padding:2px 7px;">T1</span>
+            Soil Infiltration / Filtration
+          </div>
+          <div class="lem-block-item t1">
+            <span class="ptype-badge T1" style="font-size:0.65rem; padding:2px 7px;">T1</span>
+            Individual Household Water Consumption
+          </div>
+        </div>
+      </div>
+
+      <!-- SYSTEMIC TENSIONS -->
+      <h3 style="margin-top:40px;">Systemic Tensions</h3>
+
+      <div class="tension-card">
+        <div class="tension-num">⚠ 1</div>
+        <div class="tension-body">
+          <strong>Monitoring logic mismatch (T1 tool reading a T4 process)</strong>
+          <p>Annual analyses produce snapshots (T1 cyclic observation) of a directional recovery process (T4). If results are read as compliance checks ("is it safe this year?") rather than trajectory data ("where are we in the recovery curve?"), the monitoring will fail to detect slow-moving risks — such as a recovery plateau that looks stable but has not reached genuine ecological restoration.</p>
+        </div>
+      </div>
+
+      <div class="tension-card">
+        <div class="tension-num">⚠ 2</div>
+        <div class="tension-body">
+          <strong>Environmental education as T4 not yet T5 (institutional fragility)</strong>
+          <p>After 7 years, the community's water stewardship knowledge is still a developing T4 culture, not a stable T5 institution. Community turnover continuously dilutes this capacity unless education becomes a formal, mandatory, documented onboarding process — independent of who carries it.</p>
+        </div>
+      </div>
+
+      <div class="tension-card">
+        <div class="tension-num">⚠ 3</div>
+        <div class="tension-body">
+          <strong>Product substitution porous endpoint (incomplete T4)</strong>
+          <p>The substitution process has an S-curve adoption profile with a long tail. High-commitment residents adopted early; visitors, maintenance supplies, and shared spaces continue introducing chemical inputs. A T4 that stalls at 80–90% completion still produces measurable contamination signals.</p>
+        </div>
+      </div>
+
+      <div class="tension-card">
+        <div class="tension-num">⚠ 4</div>
+        <div class="tension-body">
+          <strong>Aquifer recovery is slower than community perception</strong>
+          <p>Groundwater systems respond to contamination removal on timescales of years to decades. There is a real risk that the community, seeing improving monitoring results, interprets partial recovery as full recovery and reduces stewardship intensity. Improving ≠ recovered — the system is still within the recovery T4.</p>
+        </div>
+      </div>
+
+      <!-- LEVERAGE -->
+      <h3 style="margin-top:36px;">Key Leverage Processes</h3>
+
+      <div class="leverage-grid">
+        <div class="leverage-card lev-1">
+          <div class="lev-num">1</div>
+          <div class="lev-body">
+            <strong>Environmental Education</strong> (highest leverage)
+            <p>The only process that operates at N3 and has the potential to make the whole system recursively self-maintaining. If institutionalized, all other interventions become durable. If informal, the system is one leadership change away from gradual erosion.</p>
+          </div>
+        </div>
+        <div class="leverage-card lev-2">
+          <div class="lev-num">2</div>
+          <div class="lev-body">
+            <strong>Monitoring as Trajectory Analysis</strong> (methodological leverage)
+            <p>No additional infrastructure needed — only a change in how existing data is used. 7 years of annual analyses constitute a longitudinal dataset. Plotting trends (not just comparing to thresholds) would reveal whether the recovery T4 is on track or plateauing.</p>
+          </div>
+        </div>
+        <div class="leverage-card lev-3">
+          <div class="lev-num">3</div>
+          <div class="lev-body">
+            <strong>Procurement &amp; Visitor Protocols</strong> (closure leverage)
+            <p>Closing the long tail of product substitution requires a community policy decision, not individual behavior change. A small institutional effort converts a porous T4 into a permanent reduction in contamination inputs.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:36px; font-size:0.88rem;">
+        <strong>Note:</strong> Analysis produced using Johanna Seibt's General Process Theory and Leveled Mereology via the <code style="font-size:0.85em;">/gpt-lem-process-mapper</code> skill for Claude Cowork. Classification reflects dominant process type; many processes contain elements of multiple types as noted per entry.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function show(viewId) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+<style>
+  /* ===== EXAMPLE PAGE STYLES ===== */
+  .process-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .process-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .process-card-name {
+    font-weight: 650;
+    font-size: 0.97rem;
+    color: var(--ink);
+    flex: 1;
+  }
+  .ptype-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .ptype-badge.T1 { background: var(--t1); }
+  .ptype-badge.T2 { background: var(--t2); }
+  .ptype-badge.T3 { background: var(--t3); }
+  .ptype-badge.T4 { background: var(--t4); }
+  .ptype-badge.T5 { background: var(--t5); }
+  .plem-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .process-card-body {
+    padding: 14px 18px;
+  }
+  .param-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .param-label {
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 110px;
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-top: 1px;
+  }
+  .param-val { color: var(--ink-soft); }
+  .process-note {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 3px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* LEM Diagram */
+  .lem-diagram { margin: 16px 0 32px; }
+  .lem-block {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .lem-block-header {
+    padding: 10px 16px;
+    background: var(--accent-soft);
+  }
+  .lem-block-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .lem-block-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    border-left: 3px solid transparent;
+    background: var(--card);
+  }
+  .lem-block-item:last-child { border-bottom: none; }
+  .lem-block-item.t1 { border-left-color: var(--t1); }
+  .lem-block-item.t4 { border-left-color: var(--t4); }
+  .lem-block-item.t5 { border-left-color: var(--t5); }
+  .lem-indent { padding-left: 36px; }
+  .coupled-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  .still-building {
+    margin-left: 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .lem-arrow {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+    padding: 6px 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tensions */
+  .tension-card {
+    display: flex;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .tension-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #92400e;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+  .tension-body strong { font-size: 0.95rem; color: var(--ink); display: block; margin-bottom: 6px; }
+  .tension-body p { font-size: 0.88rem; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+
+  /* Leverage */
+  .leverage-grid { display: flex; flex-direction: column; gap: 12px; }
+  .leverage-card {
+    display: flex;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .lev-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    color: #fff; flex-shrink: 0; margin-top: 2px;
+  }
+  .lev-1 .lev-num { background: var(--accent); }
+  .lev-2 .lev-num { background: var(--t2); }
+  .lev-3 .lev-num { background: var(--t3); }
+  .lev-body strong { font-size: 0.95rem; color: var(--ink); display: block; margin-bottom: 6px; }
+  .lev-body p { font-size: 0.88rem; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+
+  @media print {
+    .inner-nav { display: none !important; }
+    .view { display: block !important; }
+    #view-hub, #view-explainer, #view-skill { display: none !important; }
+  }
+</style>
+</body>
+</html>
